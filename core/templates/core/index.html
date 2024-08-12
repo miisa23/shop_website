@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Главная страница
+{% endblock %}
+
+{% block content %}
+<div class="row row-gap-4">
+    {{ id }}
+    {% for product in products %}
+    <div class="col-12 col-md-6">
+        {% include 'components/_item-card.html' %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

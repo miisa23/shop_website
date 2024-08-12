@@ -1,0 +1,119 @@
+<style>
+    .btn-1{
+        background-color: #fff;
+        color: #B22222;
+    }
+    .btn-1:hover{
+        color: #B22222;
+        background-color: #E6E6FA;
+    }
+    .icon{
+        color: red;
+        background-color: 220, 220, 220;
+    }
+    .icon:hover{
+        color: red;
+        background-color: 220, 220, 220;
+    }
+    .btn-2 {
+        background-color: #fff;
+        color: #006400;
+    }
+    .btn-2:hover{
+        color: #006400;
+        background-color: #E6E6FA;
+    }
+    .btn-3 {
+        background-color: #fff;
+        color: #6B8E23;
+    }
+    .btn-3:hover{
+        color: #6B8E23;
+        background-color: #E6E6FA;
+    }
+    .bi {
+        color: black;
+    }
+    .btn-4 {
+        padding-top: 5px;
+        padding-bottom: 1px;
+    }
+    .ht {
+        padding: 1px;
+        padding-bottom: 0px;
+    }
+    .b {
+        background-color: #E6E6FA;
+    }
+    </style>
+<nav class="navbar ht b mb-3">
+  <div class="container">
+    <div>
+    <button class="btn btn-4">
+        <a class="navbar-brand" href="{% url 'home' %}"><h4><i class="bi bi-house-heart"></i></h4>
+            <div class="nav-item_text">Главная</div>
+        </a>
+    </button>
+    <button class="btn btn-4 icon">
+            <a class="navbar-brand" href="{% url 'liked_products' %}"><h4><i class="bi bi-suit-heart"></i></h4>
+            <div class="nav-item_text">Избранное</div>
+            </a>
+    </button>
+    <button class="btn btn-4">
+        <a class="navbar-brand" href="{% url 'in_cart_products' %}"><h4><i class="bi bi-cart3"></i></h4>
+        <div class="nav-item_text">Корзина</div>
+    </a>
+    </button>
+    <button class="btn btn-4">
+        <div class="dropdown">
+          <a class="navbar-brand" role="button" data-bs-toggle="dropdown" aria-expanded="false"><h4><i class="bi bi-person-gear"></i></h4>
+              <div class="nav-item_text dropdown-toggle">{{ request.user.first_name }}</div></a>
+          <ul class="dropdown-menu">
+            {% if not request.user.is_authenticated %}
+            <li><a class="dropdown-item btn-2" href="{% url 'registration' %}">Зарегистрироваться</a></li>
+            <li><a class="dropdown-item btn-3" href="{% url 'login' %}">Войти</a></li>
+            {% else %}
+            <li><a class="dropdown-item btn-1" href="{% url 'logout' %}">Выйти</a></li>
+            {% endif %}
+          </ul>
+        </div>
+
+    </button>
+    </div>
+
+      <form class="d-flex column-gap-2" role="search" action="{% url 'search' %}">
+          <input class="form-control" name="q" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header pink-100">
+        <h2 class="offcanvas-title" id="offcanvasNavbarLabel">Категории</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+
+      <div class="offcanvas-body">
+
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          <li class="nav-item">
+              <ul class="list-group list-group-flush">
+                  {% load core_tags %}
+
+                  {% get_categories as categories %}
+                  <div class="list-group list-group-flush">
+                      <a href="{% url 'home' %}"
+                       class="list-group-item {% if request.path == '/' %}b{% endif %}">Все</a>
+                      {% for category in categories %}
+                      {% is_category_current request=request category_id=category.pk as is_current %}
+                    <a href="{% url 'category_products' category.pk %}"
+                       class="list-group-item {% if is_current %}b{% endif %}">{{ category.title }}</a>
+                      {% endfor %}
+                  </div>
+              </ul>
+          </li>
+        </ul>
+       </form>
+  </div>
+</nav>

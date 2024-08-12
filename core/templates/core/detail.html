@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load core_tags %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+
+{% is_like_exists request product as is_liked %}
+<style>
+  .btn-like {
+       color: black;
+    }
+  .btn-1like: hover {
+       color: black;
+       background-color: #F08080;
+    }
+    .btn-cart {
+       color: black;
+       background-color: #E6E6FA;
+    }
+  .btn-1cart: hover {
+       color: black;
+       background-color: #F08080;
+    }
+</style>
+<div class="card">
+  <img src="{{ product.image.url }}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h3 class="card-title">{{ product.title }}</h3>
+    <div class="card-text"><h4><b>Краткое описание: </b>{{ product.short_description }}</h4></div>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">
+      <b>Цена: </b>{{ product.price }}</li>
+    <li class="list-group-item"><b>Автор: </b>{{ product.author }}</li>
+    <li class="list-group-item"><b>Дата размещения: </b>{{ product.created_at }}</li>
+  </ul>
+  <div class="card-footer d-flex justify-content-between">
+    {% if request.user.is_authenticated %}
+    <div class="d-flex gap-3">
+      <a href="" class="btn btn-cart fs-4">
+        Добавить в корзину <i class="bi bi-cart-plus"></i>
+      </a>
+    </div>
+    <div class="d-flex gap-3">
+      <a href="{% url 'add_like' obj_id=product.pk %}" class="btn btn-like fs-4">
+        {% if is_liked %}
+        <i class="bi bi-suit-heart-fill"></i>
+        {% else %}
+        <i class="bi bi-suit-heart"></i>
+        {% endif %}
+        {{ total_likes }}
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if request.user.is_authenticated %}
+<form action="" class="mt-4" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button class="btn btn-dark" type="submit">Отправить</button>
+</form>
+{% else %}
+<p>Только авторизованные пользователи могут оставлять отзывы</p>
+{% endif %}
+<div class="comments-block">
+  <h2 class="text-center my-2">Отзывы</h2>
+  <div class="container">
+    {% for comment in comments %}
+    <div class="row row-gap-4">
+      <div class="col-6 mb-3">
+        <div class="card">
+          <div class="card-header">
+            {{ comment.author }}
+          </div>
+          <div class="card-body">
+            <blockquote class="blockquote mb-0">
+              <p>{{ comment.text }}</p>
+              <footer class="blockquote-footer">{{ comment.product }}
+                <cite title="Source Title"> {{ comment.created_at }}</cite></footer>
+            </blockquote>
+          </div>
+        </div></div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
